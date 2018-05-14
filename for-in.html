@@ -10,6 +10,8 @@
     for (var name in window) {
         console.log(name)
     }
+    /*检查一个对象的某个属性是否可以用for in循环*/
+    console.log(window.propertyIsEnumerable('onclick'))
 </script>
 </body>
 </html>
