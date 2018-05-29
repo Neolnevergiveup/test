@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .wrap{
+            height: 200px;
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+        .line{
+            height: 20px;
+            background: black;
+        }
+        .l,.r{
+            height: 100%;
+            width: 20px;
+            background: black;
+            position: absolute;
+            top: 0;
+        }
+        .l{
+            left: 0;
+        }
+        .r{
+            right: 0;
+        }
+    </style>
+</head>
+<body>
+<!--在360里，flex布局会把绝对定位的.l和.r当成是flex的元素，其他浏览器正常-->
+    <div class="wrap">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="l"></div>
+        <div class="r"></div>
+    </div>
+</body>
+</html>
