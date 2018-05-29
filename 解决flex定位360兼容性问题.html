@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .wrap{
+            height: 200px;
+            width: 300px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .lineFather{
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .line{
+            height: 20px;
+            background: black;
+        }
+        .l,.r{
+            height: 100%;
+            width: 20px;
+            background: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="l"></div>
+        <div class="lineFather">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+        </div>
+        <div class="r"></div>
+    </div>
+</body>
+</html>
