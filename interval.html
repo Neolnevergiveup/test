@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    // 这样写会导致有多个setInterval
+    var timer
+    function f () {
+        timer = setInterval(function () {
+            console.log(1)
+            f()
+        }, 1000)
+    }
+    f()
+</script>
+</body>
+</html>
