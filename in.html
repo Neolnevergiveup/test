@@ -6,11 +6,18 @@
 </head>
 <body>
 <script>
+     // in是判断该对象是否拥有该属性
     var obj = {
         name: 'neol',
         sex: 'male'
     }
     console.log('name' in obj);
+     // hasOwnProperty是判断对象是否拥有该自有属性
+     var obj1 = {
+         name: 'neol',
+         sex: 'male'
+     }
+     console.log(Object.hasOwnProperty('name'));
 </script>
 </body>
 </html>

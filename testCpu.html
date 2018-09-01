@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    // 说明如果整个原型链重写，在重写之前实例化的对象无法继承新的原型,还是指向旧的原型
+    function Person(){
+    }
+    Person.prototype.name = 'neol'
+    var friend = new Person();
+    console.log(friend.name)
+    Person.prototype = {
+        constructor: Person,
+        name : "Nicholas",
+        age : 29,
+        job : "Software Engineer",
+        sayName : function () {
+            alert(this.name);
+        }
+    };
+    friend.sayName(); //error
+</script>
+</body>
+</html>
