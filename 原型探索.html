@@ -30,8 +30,17 @@
 //    }
 //    var p = new Person('neol', 'male')
 //    p.sayHi()
-    var arr = []
-    console.log(arr instanceof Object)
+//    var arr = []
+//    console.log(arr instanceof Object)
+    function a(ss) {
+        this.ss = ss;
+    }
+    function b(cc) {
+        this.cc=cc;
+    }
+    b.prototype=new a('ss');
+    var o = new b('cc');
+    console.log(o);
 </script>
 </body>
 </html>
