@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+几种显示图片的方式：
+<ul>
+    <li><img src='img.png'></li>
+    <li><img src="img.png" alt="prompt"></li>
+    <li><IMG SRC="img.png" alt=""></li>
+</ul>
+<script>
+//    var str = '12$&3.jpeg';
+//    var reg = /(-?)(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?/;
+//    var r = str.match(/.+\.(?:png|gif|jpe?g)$/);
+//    console.log(r)
+    // 贪婪与懒惰,默认是贪婪
+    var str =  'aabab';
+    var r = str.match(/a.*?b/);
+    console.log(r)
+</script>
+</body>
+</html>

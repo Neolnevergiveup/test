@@ -99,7 +99,7 @@
                 totalLng += parseFloat(item.lng);
                 temp = new google.maps.LatLng(item.lat, item.lng);
                 Polygonal.push(temp)
-                if (googleMap === 0) {
+                if (index === 0) {
                     minLat = item.lat
                     minLng = item.lng
                     maxLat = item.lat

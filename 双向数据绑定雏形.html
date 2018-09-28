@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="app">
+    <p v-model="message"></p>
+    <input type="text" v-model="message">
+</div>
+<script>
+    var data = {
+        message: 'Ni',
+        list: 'xxx'
+    }
+    var app = document.getElementById('app')
+    var element = app.querySelectorAll('[v-model]')
+    for (let i = 0; i < element.length; i++) {
+        element[i].oninput = function () {
+            data[this.getAttribute('v-model')] = this.value
+        }
+    }
+    Object.defineProperty(data, 'message', {
+        get: function () {
+            return this.str
+        },
+        set: function (val) {
+            var element = app.querySelectorAll('[v-model=message]')
+            for (let i = 0; i < element.length; i++) {
+                element[i].value = val
+                element[i].innerText = val
+            }
+            this.str= val
+        }
+    })
+</script>
+</body>
+</html>
