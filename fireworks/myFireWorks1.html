@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>烟火</title>
+    <style>
+        body {
+            background-color: #000000;
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+<canvas id="myCanvas"></canvas>
+<script>
+window.onload = function () {
+    // 设置canvas的宽高
+    var SCREEN_WIDTH = window.innerWidth
+    var SCREEN_HEIGHT = window.innerHeight
+    var canvas = document.querySelector('#myCanvas')
+    var context = canvas.getContext('2d')
+    canvas.width = SCREEN_WIDTH
+    canvas.height = SCREEN_HEIGHT
+    var rockets = []
+    const MAX_PARTICLES = 10
+    // 构造一个烟花对象
+    // startX起点 color颜色 endX结束x endY结束y
+    function Rocket (startX, color, endX, endY) {
+        this.startX = startX
+        this.color = color
+        this.endX = endX
+        this.endY = endY
+        this.nowX = startX
+        this.nowY = SCREEN_HEIGHT
+        this.flick = false
+        this.alpha = 1
+        this.xSpeed = Math.random() * 6 - 3
+        this.ySpeed = Math.random() * -3 - 4
+        this.resistance = 1
+    }
+    Rocket.prototype = {
+        size: 8,
+        shrink: 0.999,
+        gravity: 0.01,
+        fade: 0,
+        update: function () {
+            // apply resistance
+            this.xSpeed *= this.resistance;
+            this.ySpeed *= this.resistance;
+            // gravity down
+            this.ySpeed += this.gravity;
+            // update position based on speed
+            this.nowX += this.xSpeed;
+            this.nowY += this.ySpeed;
+            // shrink
+            this.size *= this.shrink;
+            // fade out
+            this.alpha -= this.fade;
+        },
+        render: function () {
+            if (!this.exists()) {
+                return
+            }
+            context.save()
+            context.globalCompositeOperation = 'lighter'
+            var x = parseInt(this.nowX),
+                y = parseInt(this.nowY),
+                r = parseInt(this.size / 2)
+            var gradient = context.createRadialGradient(x, y, 0.1, x, y, r)
+            gradient.addColorStop(0.1, "rgba(255, 255, 255 ," + this.alpha + ")")
+            gradient.addColorStop(1, "rgba(0, 0, 0, " + this.alpha + ")")
+            context.fillStyle = gradient
+            context.beginPath()
+            context.arc(this.nowX, this.nowY, this.flick ? Math.random() * this.size / 2 + this.size / 2 : this.size, 0, Math.PI * 2, true)
+            context.closePath()
+            context.fill()
+            context.restore()
+        },
+        exists: function () {
+            return this.alpha >= 0.1 && this.size >= 1
+        },
+        explode: function () {
+            var count = Math.random() * 10 + 80;
+            for (var i = 0; i < count; i++) {
+                var startX = getStartX()
+                var endX = (parseInt(Math.random() * 81) + 10) / 100 * SCREEN_WIDTH
+                var endY = (parseInt(Math.random() * 61) + 20) / 100 * SCREEN_HEIGHT
+                var rocket = new Rocket(startX, Math.floor(Math.random() * 360 / 10) * 10, endX, endY)
+                var angle = Math.random() * Math.PI * 2;
+                // emulate 3D effect by using cosine and put more particles in the middle
+                var speed = Math.cos(Math.random() * Math.PI / 2) * 15;
+                rocket.xSpeed = Math.cos(angle) * speed;
+                rocket.ySpeed = Math.sin(angle) * speed;
+                rocket.size = 10;
+                rocket.gravity = 0.2;
+                rocket.resistance = 0.92;
+                rocket.shrink = Math.random() * 0.05 + 0.93;
+                rocket.flick = true;
+                rocket.color = this.explosionColor;
+                rockets.push(rocket);
+            }
+        }
+    }
+    // 烟火发射
+    function launch () {
+        var startX = getStartX()
+        if (rockets.length < 1) {
+            var endX = (parseInt(Math.random() * 81) + 10) / 100 * SCREEN_WIDTH
+            var endY = (parseInt(Math.random() * 61) + 20) / 100 * SCREEN_HEIGHT
+            var rocket = new Rocket(startX, Math.floor(Math.random() * 360 / 10) * 10, endX, endY)
+            rockets.push(rocket)
+        }
+        console.log(rockets)
+    }
+    // 得到随机的发射起点
+    function getStartX () {
+        return (parseInt(Math.random() * 3) + 1) / 5 * SCREEN_WIDTH
+    }
+    function loop() {
+        // 清空canvas
+        context.fillStyle = "rgba(0, 0, 0, 0.05)"
+        context.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
+        var existingRockets = []
+        for (var i = 0; i < rockets.length; i++) {
+            // 更新位置并绘制
+            rockets[i].update();
+            rockets[i].render();
+            // calculate distance with Pythagoras
+            var distance = Math.sqrt(Math.pow(rockets[i].endX - rockets[i].nowX, 2) + Math.pow(rockets[i].endY - rockets[i].nowY, 2));
+            // random chance of 1% if rockets is above the middle
+            var randomChance = rockets[i].nowY < (SCREEN_HEIGHT * 2 / 3) ? (Math.random() * 100 <= 1) : false;
+            /* Explosion rules
+             - 80% of screen
+             - going down
+             - close to the mouse
+             - 1% chance of random explosion
+             */
+            if (rockets[i].nowY < SCREEN_HEIGHT / 5 || rockets[i].ySpeed >= 0 || distance < 50 || randomChance) {
+                 rockets[i].explode();
+            } else {
+                existingRockets.push(rockets[i]);
+            }
+        }
+        rockets = existingRockets;
+        var existingParticles = [];
+
+        for (var i = 0; i < rockets.length; i++) {
+            rockets[i].update();
+
+            // render and save particles that can be rendered
+            if (rockets[i].exists()) {
+                rockets[i].render(context);
+                existingParticles.push(rockets[i]);
+            }
+        }
+
+        // update array with existing particles - old particles should be garbage collected
+        particles = existingParticles;
+
+        while (particles.length > MAX_PARTICLES) {
+            rockets.shift();
+        }
+    }
+    setInterval(launch, 500)
+    setInterval(loop, 1000 / 50);
+    // 监听窗口变化
+    window.onresize = function () {
+        canvas.width = SCREEN_WIDTH = window.innerWidth
+        canvas.height = SCREEN_HEIGHT = window.innerHeight
+    }
+}
+</script>
+</body>
+</html>
