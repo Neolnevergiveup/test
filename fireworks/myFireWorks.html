@@ -185,7 +185,8 @@
         var x = this.pos.x,
             y = this.pos.y,
             r = this.size / 2;
-
+        console.log(x,y,r)
+        debugger
         var gradient = c.createRadialGradient(x, y, 0.1, x, y, r);
         gradient.addColorStop(0.1, "rgba(255,255,255," + this.alpha + ")");
         gradient.addColorStop(0.8, "hsla(" + this.color + ", 100%, 50%, " + this.alpha + ")");
