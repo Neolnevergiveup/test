@@ -24,7 +24,7 @@ window.onload = function () {
     canvas.height = SCREEN_HEIGHT
     var rockets = []
     var fireworks = []
-    const MAX_PARTICLES = 400
+    const MAX_PARTICLES = 400 // 一个烟花的子火焰数
     // 构造一个烟花对象
     // startX起点 color颜色 endX结束x endY结束y
     function Rocket (startX, color, endX, endY) {
@@ -123,26 +123,25 @@ window.onload = function () {
         // fade out
         this.alpha -= this.fade;
     };
-    FireWork.prototype.render = function(c) {
+    FireWork.prototype.render = function(i) {
         if (!this.exists()) {
             return;
         }
-        c.save();
-        c.globalCompositeOperation = 'lighter';
+        context.save();
+        context.globalCompositeOperation = 'lighter';
         var x = this.endX,
             y = this.endY,
             r = this.size / 2;
-        var gradient = c.createRadialGradient(x, y, 0.1, x, y, r);
+        var gradient = context.createRadialGradient(x, y, 0.1, x, y, r);
         gradient.addColorStop(0.1, "rgba(255,255,255," + this.alpha + ")");
         gradient.addColorStop(0.8, "hsla(" + this.color + ", 100%, 50%, " + this.alpha + ")");
         gradient.addColorStop(1, "hsla(" + this.color + ", 100%, 50%, 0.1)");
-        c.fillStyle = gradient;
-        c.beginPath();
-        c.arc(x, y, this.flick ? Math.random() * this.size : this.size, 0, Math.PI * 2, true);
-        c.closePath();
-        c.fill();
-        c.restore();
-        console.log(this.nowX, this.nowY, this.flick ? Math.random() * this.size : this.size, 0, Math.PI * 2, true)
+        context.fillStyle = gradient;
+        context.beginPath();
+        context.arc(x, y, this.flick ? Math.random() * this.size : this.size, 0, Math.PI * 2, true);
+        context.closePath();
+        context.fill();
+        context.restore();
     };
     // 烟火发射
     function launch () {
@@ -150,6 +149,11 @@ window.onload = function () {
         if (rockets.length < 3) {
             var endX = (parseInt(Math.random() * 81) + 10) / 100 * SCREEN_WIDTH
             var endY = (parseInt(Math.random() * 61) + 20) / 100 * SCREEN_HEIGHT
+            if (endX < 50) {
+                endX = 50
+            } else if (endX > (SCREEN_WIDTH - 50)) {
+                endX = SCREEN_WIDTH - 50
+            }
             var rocket = new Rocket(startX, Math.floor(Math.random() * 360 / 10) * 10, endX, endY)
             rockets.push(rocket)
         }
@@ -189,7 +193,7 @@ window.onload = function () {
             fireworks[i].update();
             // render and save particles that can be rendered
             if (fireworks[i].exists()) {
-                fireworks[i].render(context);
+                fireworks[i].render(i);
                 existingParticles.push(fireworks[i]);
             }
         }
@@ -200,7 +204,7 @@ window.onload = function () {
         }
     }
     setInterval(launch, 500)
-    setInterval(loop, 1000 / 50);
+    setInterval(loop, 1000 / 40);
     // 监听窗口变化
     window.onresize = function () {
         canvas.width = SCREEN_WIDTH = window.innerWidth
