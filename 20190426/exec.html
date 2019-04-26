@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    // exec
+    var str = 'cat,bat,dat,ddd';
+    var pattern = /.at/g;
+    while ((result = pattern.exec(str)) != null)  {
+        console.log(result);
+        console.log(pattern.lastIndex);
+    }
+    // test
+    var tel = '0663-2355173';
+    var pattern = /\d{4}-\d{7}/;
+    if (pattern.test(tel)) {
+        console.log('是固定电话！');
+    }
+    //
+    var text = 'this has been a short summer,dfort..lsort';
+    var pattern = /(..)or(.)/g;
+    var res = pattern.exec(text);
+    console.log(res);
+    var res = pattern.exec(text);
+    console.log(res);
+</script>
+</body>
+</html>

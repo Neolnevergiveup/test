@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>柯里化提前返回</title>
+    <style>
+        #dd{
+            width: 200px;
+            height: 200px;
+            border: 1px solid red;
+        }
+    </style>
+</head>
+<body>
+<div id="dd"></div>
+<script>
+    // addEventlistener ie9以上，ie8以下是attachEvent
+    let eventListener = (function() {
+        if (window.addEventListener) { // ie9以上
+            return function (el, type, fn, capture) {
+                el.addEventListener(type, function (e) {
+                    fn.call(null, e)
+                }, capture)
+            }
+        } else {
+            return function (el, type, fn, capture) {
+                el.attachEvent('on' + type, function (e) {
+                    fn.call(null, e)
+                }, capture)
+            }
+        }
+    })()
+    function fn () {
+        console.log('click')
+    }
+    let dom = document.getElementById('dd')
+    eventListener(dom, 'click', fn, true)
+</script>
+</body>
+</html>

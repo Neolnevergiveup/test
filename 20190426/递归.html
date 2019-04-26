@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="dd"></div>
+<script>
+//    function fun (num) {
+//        if (num<=1){
+//            return 1;
+//        }else{
+//            return num*fun(num-1);
+//        }
+//    }
+//    console.log(fun(3));
+//    var dom = document.getElementsByClassName('dd')[0];
+//    dom.onclick=function(){
+//        alert(1)
+//    }
+//    var event=document.createEvent('MouseEvents');
+//    event.initMouseEvent('click',true,true,document.defaultView,0,0,0,0,0,false,false,false,false,0,null);
+//    dom.dispatchEvent(event);
+//    throw 123456;
+var path = "/layout/userManage"
+var menu = [
+    {
+        title: '运营管理',
+        key: 'Manage',
+        redirectUrl: '/layout/userManage',
+        icon: 'appstore',
+        children: [
+            {
+                path: '/layout/userManage',
+                title: '用户管理',
+                key: 'UserManage',
+                icon: 'setting',
+                parentKey: ['Manage']
+            },
+            {
+                title: '用户列表',
+                key: 'UserList',
+                redirectUrl: '/layout/userList/root',
+                children: [{
+                    path: '/layout/userList/root',
+                    title: 'root',
+                    key: 'Root',
+                    icon: 'setting',
+                    parentKey: ['Manage', 'UserList']
+                }]
+            }
+        ]
+    },{
+        title: '地图',
+        key: 'Map',
+        redirectUrl: '/layout/map',
+        icon: 'appstore',
+        children: [
+            {
+                path: '/layout/map',
+                title: 'GoogleMap',
+                key: 'GoogleMap',
+                icon: 'setting',
+                parentKey: ['Map']
+            }
+        ]
+    }
+]
+var arr1 = []
+find(menu)
+console.log(arr1)
+function find(item, arr){
+    for (var i = 0; i < item.length; i++) {
+        if (item[i].hasOwnProperty('children')) {
+            if (arr) {
+                arr.push(i)
+                find(item[i].children, arr)
+            } else {
+                find(item[i].children, [i])
+            }
+        } else if (path == item[i].path) {
+            arr.push(i)
+            arr1 = arr
+        }
+    }
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    // 引用类型放在构造函数里，实例化出来是独立的
+//    function Person (name, sex) {
+//        this.name = name
+//        this.sex = sex
+//        this.arr = [1, 2, 3]
+//    }
+//    var p1 = new Person('neol', 'm')
+//    var p2 = new Person('ping', 'n')
+//    p1.arr.push(4)
+//    console.log(p1.arr)
+//    console.log(p2.arr)
+    // 引用类型放在原型链中，实例化出来是公用的
+//    function Person () {}
+//    Person.prototype.arr = [1,2,3]
+//    var p1 = new Person()
+//    var p2 = new Person()
+//    p1.arr.push(4)
+//    console.log(p1.arr)
+//    console.log(p2.arr)
+    // 最好的继承
+    function Person (name, sex, arr) {
+        this.name = name
+        this.sex = sex
+        this.arr = arr
+    }
+    Person.prototype  = {
+        sayHi: function () {
+            console.log(`${this.name}:${this.arr}`)
+        }
+    }
+    var p1 = new Person('neol', 'male', [1,2,3])
+    var p2 = new Person('ping', 'nv', [23,21])
+    p1.sayHi()
+    p2.sayHi()
+</script>
+</body>
+</html>

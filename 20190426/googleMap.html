@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>谷歌地图</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+        /* Always set the map height explicitly to define the size of the div
+         * element that contains the map. */
+        #map {
+            height: 100%;
+        }
+        /* Optional: Makes the sample page fill the window. */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        .gmnoprint{
+            display: none;
+        }
+        a[title='点击以在 Google 地图上查看此区域']{
+            display: none !important;
+        }
+        button[title='切换全屏视图']{
+            display: none !important;
+        }
+    </style>
+    <script src="http://maps.google.cn/maps/api/js?key=AIzaSyAhHyPySMyLZ0OyowZzXKfOmH8pvO5PaTs"></script>
+</head>
+<body>
+<div id="map"></div>
+<script>
+    var map, Polygonal = [];
+    // 模拟一个点的数组,lng代表精度，lat代表纬度
+    var limit = [
+        {
+            lat: 22.607859,
+            lng: 114.320209
+        },
+        {
+            lat: 22.560875,
+            lng: 114.315035
+        },
+        {
+            lat: 22.587572,
+            lng: 114.433755
+        },
+        {
+            lat: 22.626808,
+            lng: 114.334007
+        },
+        {
+            lat: 22.607859,
+            lng: 114.320209
+        }
+    ];
+    /**
+     * 描述：初始化谷歌地图
+    **/
+    function initMap(centerLatLng, minLatLng, maxLatLng) {
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: centerLatLng,
+            zoom: 13,
+            mapTypeId: 'hybrid'
+        });
+        map.setOptions({
+            draggable: false,
+            zoomControl: false
+        })
+        var bounds = new google.maps.LatLngBounds();
+        bounds.extend(minLatLng);
+        bounds.extend(maxLatLng);
+        map.fitBounds(bounds);
+        // 绘制多边形
+        drawArea();
+    }
+    function drawArea(){
+        var flightPath = new google.maps.Polygon({
+            path: Polygonal,
+            strokeColor: "#FFFFFF",
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: "#0000FF",
+            fillOpacity: 0.4
+        });
+        flightPath.setMap(map);
+    }
+    /**
+     * 描述：得到安卓传过来的参数，计算出显示范围(显示范围由左上右上两点决定)和中点
+    **/
+    function getArea(params) {
+        var centerLat, centerLng, totalLat = 0, totalLng = 0, centerLatLng;
+        var minLat = 0, minLng = 0, maxLat = 0, maxLng = 0, minLatLng, maxLatLng;
+        var temp;
+        if (params.length > 0) {
+            params.forEach(function(item, index){
+                totalLat += parseFloat(item.lat);
+                totalLng += parseFloat(item.lng);
+                temp = new google.maps.LatLng(item.lat, item.lng);
+                Polygonal.push(temp)
+                if (index === 0) {
+                    minLat = item.lat
+                    minLng = item.lng
+                    maxLat = item.lat
+                    maxLng = item.lng
+                } else {
+                    if (parseFloat(item.lat) < parseFloat(minLat)) {
+                        minLat = item.lat
+                    }
+                    if (parseFloat(item.lat) > parseFloat(maxLat)) {
+                        maxLat = item.lat
+                    }
+                    if (parseFloat(item.lng) < parseFloat(minLng)) {
+                        minLng = item.lng
+                    }
+                    if (parseFloat(item.lng) > parseFloat(maxLng)) {
+                        maxLng = item.lng
+                    }
+                }
+            })
+            centerLat = totalLat / params.length;
+            centerLng = totalLng / params.length;
+            centerLatLng = new google.maps.LatLng(centerLat, centerLng);
+            minLatLng = new google.maps.LatLng(minLat, minLng);
+            maxLatLng = new google.maps.LatLng(maxLat, maxLng);
+        }
+        initMap(centerLatLng, minLatLng, maxLatLng);
+    }
+    getArea(limit);
+</script>
+</body>
+</html>

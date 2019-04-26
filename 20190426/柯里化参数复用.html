@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    // 柯里化参数复用
+    function add (a) {
+        return function (b) {
+            return function (c) {
+                return a + b + c
+            }
+        }
+    }
+    var add5 = add(5)
+    console.log(add5(10)(6))
+</script>
+</body>
+</html>

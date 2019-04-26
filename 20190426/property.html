@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    // configurable一旦配置为false，就不能再次配置了
+//    var person = {};
+//    Object.defineProperty(person, 'name', {
+//        configurable: true,
+//        value: 'neol'
+//    })
+//    alert(person.name); //"Nicholas"
+//    delete person.name;
+//    alert(person.name); //"Nicholas"
+//    var obj = {
+//        name: 'neol'
+//    }
+//    console.log(obj.constructor);
+    function obj (name) {
+        this.name = name
+    }
+    var oo = new obj('neol');
+    obj.prototype.salary = '20000';
+    console.log(oo.name + '\'s salary is ' + oo.salary);
+</script>
+</body>
+</html>
