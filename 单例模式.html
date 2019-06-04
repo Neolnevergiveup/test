@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>单例模式</title>
+</head>
+<body>
+<script>
+    function Person (name) {
+        this.name = name
+    }
+    const getSingleInstance = (function (name) {
+        var singleInstance
+        return function (name) {
+            if (singleInstance) {
+                return singleInstance
+            }
+            return singleInstance = new Person(name)
+        }
+    })()
+    const instance1 = new getSingleInstance('Neol')
+    const instance2 = new getSingleInstance('xp')
+    console.log(instance1, instance2)
+</script>
+</body>
+</html>
