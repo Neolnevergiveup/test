@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>异步解决方案</title>
+</head>
+<body>
+<script>
+    // 采用回调的方式完成
+//    const walk = (item, fn) => {
+//        console.log(item)
+//        fn && fn()
+//    }
+//    walk('左10', walk('下10', walk('右20')))
+    // 采用promise方式完成,避免回调地狱
+//    const walk = (item) => {
+//        return new Promise(resolve => {
+//            resolve(item)
+//        })
+//    }
+//    walk('左10').then(res => {
+//        console.log(res)
+//    }).then(() => {
+//        walk('下10').then(res => {
+//            console.log(res)
+//        })
+//    }).then(() => {
+//        walk('右20').then(res => {
+//            console.log(res)
+//        })
+//    })
+    // 采用generator方案
+//    const walk = (item) => {
+//        return new Promise(resolve => {
+//            resolve(item)
+//        })
+//    }
+//    function *task(){
+//        yield walk('左10').then(res => {
+//            console.log(res)
+//        })
+//        yield walk('下10').then(res => {
+//            console.log(res)
+//        })
+//        yield walk('右20').then(res => {
+//            console.log(res)
+//        })
+//    }
+//    const gen = task()
+//    console.log(gen)
+//    gen.next()
+//    gen.next()
+//    gen.next()
+    // async、await略
+</script>
+</body>
+</html>
