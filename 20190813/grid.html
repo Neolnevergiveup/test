@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>grid</title>
+    <style>
+        .container{
+            display: grid;
+            grid-template-columns: repeat(3, 50px);
+            grid-template-rows: repeat(3, 50px);
+            grid-row-gap: 20px;
+            grid-column-gap: 20px;
+            -ms-display: grid;
+            -ms-grid-template-columns: repeat(3, 50px);
+            -ms-grid-template-rows: repeat(3, 50px);
+        }
+    </style>
+</head>
+<body>
+<span>header</span>
+<div class="container">
+    <div><p>1</p></div>
+    <div><p>2</p></div>
+    <div><p>3</p></div>
+    <div><p>4</p></div>
+    <div><p>5</p></div>
+    <div><p>6</p></div>
+    <div><p>7</p></div>
+    <div><p>8</p></div>
+    <div><p>9</p></div>
+</div>
+<span>footer</span>
+</body>
+</html>

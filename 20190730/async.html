@@ -13,13 +13,17 @@
             }, 2000)
         })
     }
+    function a1() {
+        return Promise.resolve(2)
+    }
     async function test() {
         let f = a()
-        let f1 = a()
+        let f1 = a1()
         let res = await f
         let res1 = await f1
         console.log(res)
         console.log(res1)
+        console.log(2)
     }
     test()
 </script>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    function a (name) {
+        this.name = name
+    }
+    function b (sex) {
+        this.sex = sex
+    }
+    function c (sex) {
+        this.sex = sex
+    }
+//    b.prototype = new a('neol')
+    b.prototype = Object.create(a.prototype)
+    b.prototype.constructor = b
+    c.prototype = new a('a')
+    c.prototype.constructor = c
+    console.log(new b('m'))
+    console.log(new c('m'))
+</script>
+</body>
+</html>

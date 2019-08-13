@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    // 构造函数继承,原型方法不能继承
+//    function parent (name) {
+//        this.name = name
+//    }
+//    parent.prototype.getName = () => {
+//        console.log(this.name)
+//    }
+//    function child (name) {
+//        parent.call(this, name)
+//    }
+//    console.log(new parent('a'))
+//    console.log(new child('a'))
+    // 原型链继承,存在的问题是：子类的原型指向父类的实例，导致子类的原型带着父类的属性;子类的构造函数被重写，需要手动指定
+//    function parent (name) {
+//        this.name = name
+//    }
+//    parent.prototype.getName = () => {
+//        console.log(this.name)
+//    }
+//    function child (name) {
+//        this.childName = name
+//    }
+//    child.prototype = new parent()
+//    child.prototype.constructor = child
+//    console.log(new child())
+    // 组合继承 略
+    // 较完整继承
+    function parent (name) {
+        this.name = name
+    }
+    parent.prototype.getName = () => {
+        console.log(this.name)
+    }
+//    function child (sex) {
+//        this.sex = sex
+//    }
+//
+//    child.prototype.getSex = () => {
+//        console.log(this.sex)
+//    }
+    class child{
+        constructor (sex) {
+            this.sex = sex
+        }
+        getSex () {
+            console.log(this.sex)
+        }
+    }
+    function inherit(Child, Parent) {
+        // 继承原型上的属性
+        Child.prototype = Object.create(Parent.prototype)
+//        console.log(Child.prototype)
+//        // 修复 constructor
+//        Child.prototype.constructor = Child
+////        // 存储超类
+        Child.super = Parent
+//        // 静态属性继承
+//        if (Object.setPrototypeOf) {
+//            // setPrototypeOf es6
+//            Object.setPrototypeOf(Child, Parent)
+//        } else if (Child.__proto__) {
+//            // __proto__ es6 引入，但是部分浏览器早已支持
+//            Child.__proto__ = Parent
+//        } else {
+//            // 兼容 IE10 等陈旧浏览器
+//            // 将 Parent 上的静态属性和方法拷贝一份到 Child 上，不会覆盖 Child 上的方法
+//            for (var k in Parent) {
+//                if (Parent.hasOwnProperty(k) && !(k in Child)) {
+//                    Child[k] = Parent[k]
+//                }
+//            }
+//        }
+    }
+    inherit(child, parent)
+    let child1 = new child('man')
+    console.log(child1)
+</script>
+</body>
+</html>

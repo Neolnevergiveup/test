@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>烟火</title>
+    <style>
+        body {
+            background-color: #000000;
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+<canvas id="myCanvas"></canvas>
+<script>
+window.onload = function () {
+    // 设置canvas的宽高
+    var SCREEN_WIDTH = window.innerWidth
+    var SCREEN_HEIGHT = window.innerHeight
+    var canvas = document.querySelector('#myCanvas')
+    var context = canvas.getContext('2d')
+    canvas.width = SCREEN_WIDTH
+    canvas.height = SCREEN_HEIGHT
+    var rockets = []
+    var fireworks = []
+    const MAX_PARTICLES = 400 // 一个烟花的子火焰数
+    // 构造一个烟花对象
+    // startX起点 color颜色 endX结束x endY结束y
+    function Rocket (startX, color, endX, endY) {
+        this.startX = startX
+        this.color = color
+        this.endX = endX
+        this.endY = endY
+        this.nowX = startX
+        this.nowY = SCREEN_HEIGHT
+        this.flick = false // 是否消失
+        this.alpha = 1 // 透明度
+        this.xSpeed = Math.random() * 6 - 3 // x轴速度
+        this.ySpeed = Math.random() * -3 - 4 // y轴速度
+        this.resistance = 1 // 重力
+        this.explosionColor = 0 // 爆炸颜色
+        this.gravity = 0.01 // 重力减少的速度
+        this.size = 8
+        this.shrink = 0.999
+        this.fade = 0
+        this.explosionColor = Math.floor(Math.random() * 360 / 10) * 10
+    }
+    Rocket.prototype = {
+        update: function () {
+            // apply resistance
+            this.xSpeed *= this.resistance;
+            this.ySpeed *= this.resistance;
+            // gravity down
+            this.ySpeed += this.gravity;
+            // update position based on speed
+            this.nowX += this.xSpeed;
+            this.nowY += this.ySpeed;
+            // shrink
+            this.size *= this.shrink;
+            // fade out
+            this.alpha -= this.fade;
+        },
+        render: function () {
+            if (!this.exists()) {
+                return
+            }
+            context.save()
+            context.globalCompositeOperation = 'lighter'
+            var x = parseInt(this.nowX),
+                y = parseInt(this.nowY),
+                r = parseInt(this.size / 2)
+            var gradient = context.createRadialGradient(x, y, 0.1, x, y, r)
+            gradient.addColorStop(0.1, "rgba(255, 255, 255 ," + this.alpha + ")")
+            gradient.addColorStop(1, "rgba(0, 0, 0, " + this.alpha + ")")
+            context.fillStyle = gradient
+            context.beginPath()
+            context.arc(this.nowX, this.nowY, this.flick ? Math.random() * this.size / 2 + this.size / 2 : this.size, 0, Math.PI * 2, true)
+            context.closePath()
+            context.fill()
+            context.restore()
+        },
+        exists: function () {
+            return this.alpha >= 0.1 && this.size >= 1
+        },
+        explode: function (item) {
+            var count = Math.random() * 10 + 80;
+            for (var i = 0; i < count; i++) {
+                var startX = item.startX
+                var endX = item.nowX
+                var endY = item.nowY
+                var firework = new FireWork(startX, Math.floor(Math.random() * 360 / 10) * 10, endX, endY)
+                var angle = Math.random() * Math.PI * 2;
+                // emulate 3D effect by using cosine and put more particles in the middle
+                var speed = Math.cos(Math.random() * Math.PI / 2) * 15;
+                firework.xSpeed = Math.cos(angle) * speed;
+                firework.ySpeed = Math.sin(angle) * speed;
+                firework.size = 10;
+                firework.gravity = 0.2;
+                firework.resistance = 0.92;
+                firework.shrink = Math.random() * 0.05 + 0.93;
+                firework.flick = true;
+                firework.color = this.explosionColor;
+                fireworks.push(firework);
+            }
+        }
+    }
+    function FireWork (startX, color, endX, endY) {
+        Rocket.call(this, startX, color, endX, endY)
+    }
+    FireWork.prototype = new Rocket()
+    FireWork.prototype.update = function() {
+        // apply resistance
+        this.xSpeed *= this.resistance;
+        this.ySpeed *= this.resistance;
+        // gravity down
+        this.ySpeed += this.gravity;
+        // update position based on speed
+        this.endX += this.xSpeed;
+        this.endY += this.ySpeed;
+        // shrink
+        this.size *= this.shrink;
+        // fade out
+        this.alpha -= this.fade;
+    };
+    FireWork.prototype.render = function(i) {
+        if (!this.exists()) {
+            return;
+        }
+        context.save();
+        context.globalCompositeOperation = 'lighter';
+        var x = this.endX,
+            y = this.endY,
+            r = this.size / 2;
+        var gradient = context.createRadialGradient(x, y, 0.1, x, y, r);
+        gradient.addColorStop(0.1, "rgba(255,255,255," + this.alpha + ")");
+        gradient.addColorStop(0.8, "hsla(" + this.color + ", 100%, 50%, " + this.alpha + ")");
+        gradient.addColorStop(1, "hsla(" + this.color + ", 100%, 50%, 0.1)");
+        context.fillStyle = gradient;
+        context.beginPath();
+        context.arc(x, y, this.flick ? Math.random() * this.size : this.size, 0, Math.PI * 2, true);
+        context.closePath();
+        context.fill();
+        context.restore();
+    };
+    // 烟火发射
+    function launch () {
+        var startX = getStartX()
+        if (rockets.length < 3) {
+            var endX = (parseInt(Math.random() * 81) + 10) / 100 * SCREEN_WIDTH
+            var endY = (parseInt(Math.random() * 61) + 20) / 100 * SCREEN_HEIGHT
+            if (endX < 50) {
+                endX = 50
+            } else if (endX > (SCREEN_WIDTH - 50)) {
+                endX = SCREEN_WIDTH - 50
+            }
+            var rocket = new Rocket(startX, Math.floor(Math.random() * 360 / 10) * 10, endX, endY)
+            rockets.push(rocket)
+        }
+    }
+    // 得到随机的发射起点
+    function getStartX () {
+        return (parseInt(Math.random() * 3) + 1) / 4 * SCREEN_WIDTH
+    }
+    function loop() {
+        // 清空canvas
+        context.fillStyle = "rgba(0, 0, 0, 0.05)"
+        context.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
+        var existingRockets = []
+        for (var i = 0; i < rockets.length; i++) {
+            // 更新位置并绘制
+            rockets[i].update();
+            rockets[i].render();
+            // calculate distance with Pythagoras
+            var distance = Math.sqrt(Math.pow(rockets[i].endX - rockets[i].nowX, 2) + Math.pow(rockets[i].endY - rockets[i].nowY, 2));
+            // random chance of 1% if rockets is above the middle
+            var randomChance = rockets[i].nowY < (SCREEN_HEIGHT * 2 / 3) ? (Math.random() * 100 <= 1) : false;
+            /* Explosion rules
+             - 80% of screen
+             - going down
+             - close to the mouse
+             - 1% chance of random explosion
+             */
+            if (rockets[i].nowY < SCREEN_HEIGHT / 5 || rockets[i].ySpeed >= 0 || distance < 50 || randomChance) {
+                 rockets[i].explode(rockets[i]);
+            } else {
+                existingRockets.push(rockets[i]);
+            }
+        }
+        rockets = existingRockets;
+        var existingParticles = [];
+        for (var i = 0; i < fireworks.length; i++) {
+            fireworks[i].update();
+            // render and save particles that can be rendered
+            if (fireworks[i].exists()) {
+                fireworks[i].render(i);
+                existingParticles.push(fireworks[i]);
+            }
+        }
+        // update array with existing particles - old particles should be garbage collected
+        fireworks = existingParticles;
+        while (fireworks.length > MAX_PARTICLES) {
+            rockets.shift();
+        }
+    }
+    setInterval(launch, 500)
+    setInterval(loop, 1000 / 40);
+    // 监听窗口变化
+    window.onresize = function () {
+        canvas.width = SCREEN_WIDTH = window.innerWidth
+        canvas.height = SCREEN_HEIGHT = window.innerHeight
+    }
+}
+</script>
+</body>
+</html>
